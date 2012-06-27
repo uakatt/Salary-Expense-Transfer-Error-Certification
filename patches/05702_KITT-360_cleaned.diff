@@ -1,0 +1,70 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 5701)
++++ work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 5702)
+@@ -56,18 +56,18 @@
+         List<ExpenseTransferSourceAccountingLine> sourceAcctLines;
+         List<ExpenseTransferTargetAccountingLine> targetAcctLines;
+         
+-        String defaultNumFiscalPeriods = parameterService.getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED);
++        String defaultNumFiscalPeriods = parameterService.getParameterValue(currDocument.getClass(), AZKFSConstants.DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED);
+         Integer defaultPeriodsFromParameter = new Integer(defaultNumFiscalPeriods);
+         LOG.debug("defaultPeriodsFromParameter: " + defaultPeriodsFromParameter);
+         
+         // check fiscal periods and the system parameters involving age of transaction
+         sourceAcctLines = currDocument.getSourceAccountingLines();        
+-        olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument.getSourceAccountingLines(), defaultPeriodsFromParameter);
++        olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument, currDocument.getSourceAccountingLines(), defaultPeriodsFromParameter);
+         LOG.debug("olderThanFiscalPeriods for source accounting lines: " + olderThanFiscalPeriods);
+         
+         if (!olderThanFiscalPeriods) {
+             targetAcctLines = currDocument.getTargetAccountingLines();
+-            olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument.getTargetAccountingLines(), defaultPeriodsFromParameter);
++            olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument, currDocument.getTargetAccountingLines(), defaultPeriodsFromParameter);
+             LOG.debug("olderThanFiscalPeriods for target accounting lines: " + olderThanFiscalPeriods);
+         }
+         
+@@ -101,7 +101,7 @@
+      * @return true if all of the transaction dates are younger by fiscal periods than specified in the appropriate
+      *  parameter; false otherwise
+      */
+-    public boolean defaultNumberOfFiscalPeriodsCheck(List<LaborLedgerExpenseTransferAccountingLine> accountingLines, Integer periodsFromParameter) {
++    public boolean defaultNumberOfFiscalPeriodsCheck(SalaryExpenseTransferDocument currDocument, List<LaborLedgerExpenseTransferAccountingLine> accountingLines, Integer periodsFromParameter) {
+         UniversityDate currUnivDate = universityDateService.getCurrentUniversityDate();
+         Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
+         String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
+@@ -119,7 +119,7 @@
+             
+             // check sub fund associated with the target accounting line
+             if (currentLine instanceof ExpenseTransferTargetAccountingLine) {
+-                periodsFromParameter = checkCurrentSubFund(periodsFromParameter, (ExpenseTransferTargetAccountingLine) currentLine);
++                periodsFromParameter = checkCurrentSubFund(currDocument, periodsFromParameter, (ExpenseTransferTargetAccountingLine) currentLine);
+                 LOG.debug("periodsFromParameter: " + periodsFromParameter);
+             }
+ 
+@@ -144,10 +144,10 @@
+      * @param currentTargetLine
+      * @return the periodsFromParameter, which may have value in ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND
+      */
+-    private Integer checkCurrentSubFund(Integer periodsFromParameter, ExpenseTransferTargetAccountingLine currentTargetLine) {
++    private Integer checkCurrentSubFund(SalaryExpenseTransferDocument currDocument, Integer periodsFromParameter, ExpenseTransferTargetAccountingLine currentTargetLine) {
+         LOG.debug("in checkCurrentSubFund");
+         SubFundGroup subFundGroup = currentTargetLine.getAccount().getSubFundGroup();
+-        String newComparePeriods = parameterService.getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, subFundGroup.getSubFundGroupCode());
++        String newComparePeriods = parameterService.getParameterValue(currDocument.getClass(), AZKFSConstants.ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, subFundGroup.getSubFundGroupCode());
+                         
+         if (newComparePeriods != null) {
+             periodsFromParameter = new Integer(newComparePeriods);
+Index: work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 5701)
++++ work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 5702)
+@@ -107,7 +107,7 @@
+     private boolean checkTargetLines(SalaryExpenseTransferDocument setDocument) {
+         Integer initialPeriodsFromParameter = null;        
+         
+-        return !(getSetErrorCertificationValidationService().defaultNumberOfFiscalPeriodsCheck(setDocument.getTargetAccountingLines(), initialPeriodsFromParameter));
++        return !(getSetErrorCertificationValidationService().defaultNumberOfFiscalPeriodsCheck(setDocument, setDocument.getTargetAccountingLines(), initialPeriodsFromParameter));
+     }       
+  
+     /**

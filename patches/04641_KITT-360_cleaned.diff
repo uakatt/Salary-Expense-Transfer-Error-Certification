@@ -1,0 +1,38 @@
+Index: test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+===================================================================
+--- test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 4640)
++++ test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 4641)
+@@ -105,6 +105,33 @@
+         assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
+     }
+     
++    public void testTargetAccountingLine() {
++        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
++        validation.setUniversityDateService(universityDateService);
++        
++        Account account = new Account();
++        SubFundGroup subFundGroup = new SubFundGroup();
++        subFundGroup.setSubFundGroupCode("AG");
++        account.setSubFundGroup(subFundGroup);
++        
++        // create a target accounting line for testing in set object
++        ExpenseTransferTargetAccountingLine targetAccountingLine = new ExpenseTransferTargetAccountingLine();
++        targetAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear());
++        targetAccountingLine.setPayrollEndDateFiscalPeriodCode("11");
++        targetAccountingLine.setAccount(account);
++
++        // modify error certification's state as completely filled out
++        setUpErrorCertificationObject(true);
++                
++        set.addTargetAccountingLine(targetAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertFalse("Unexpected requirement of Error Certification Tab.", hasError);    
++    }
++    
+     @SuppressWarnings("deprecation")
+     public void testOlderTargetAccountingLine() {
+         SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);

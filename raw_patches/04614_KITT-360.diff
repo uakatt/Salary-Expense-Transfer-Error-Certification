@@ -1,0 +1,188 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 0)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 4614)
+@@ -0,0 +1,183 @@
++/*
++ * Copyright 2009 The Kuali Foundation.
++ * 
++ * Licensed under the Educational Community License, Version 1.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ * 
++ * http://www.opensource.org/licenses/ecl1.php
++ * 
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package edu.arizona.kfs.module.ld.document.validation.impl;
++
++import static org.kuali.kfs.sys.KFSPropertyConstants.REFERENCE_NUMBER;
++
++import java.util.Calendar;
++import java.util.Collection;
++import java.util.Date;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++import org.kuali.kfs.coa.businessobject.SubFundGroup;
++import org.kuali.kfs.gl.businessobject.Entry;
++import org.kuali.kfs.module.ld.businessobject.ExpenseTransferTargetAccountingLine;
++import org.kuali.kfs.sys.businessobject.AccountingLineBase;
++import org.kuali.kfs.sys.businessobject.UniversityDate;
++import org.kuali.kfs.sys.context.SpringContext;
++import org.kuali.kfs.sys.service.UniversityDateService;
++import org.kuali.rice.core.util.RiceConstants;
++import org.kuali.rice.kns.document.Document;
++import org.kuali.rice.kns.rules.PromptBeforeValidationBase;
++import org.kuali.rice.kns.service.BusinessObjectService;
++import org.kuali.rice.kns.service.KualiConfigurationService;
++import org.kuali.rice.kns.service.ParameterService;
++import org.kuali.rice.kns.util.GlobalVariables;
++import org.kuali.rice.kns.util.KNSPropertyConstants;
++
++import edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument;
++import edu.arizona.kfs.sys.AZKFSConstants;
++import edu.arizona.kfs.sys.KFSConstants;
++import edu.arizona.kfs.sys.KFSKeyConstants;
++
++public class SalaryExpenseTransferDocumentPreRules extends PromptBeforeValidationBase {
++    protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(SalaryExpenseTransferDocumentPreRules.class);
++        
++    /**
++     * Will call private methods to examine a SET Document.
++     * Includes Error Certification Statement for approval by a fiscal officer if appropriate.
++     * @see org.kuali.rice.kns.rules.PromptBeforeValidationBase#doPrompts(org.kuali.rice.kns.document.Document)
++     */
++    @Override
++    public boolean doPrompts(Document document) {
++        boolean preRulesOK = true;
++        
++        SalaryExpenseTransferDocument setDocument = (SalaryExpenseTransferDocument) document;
++        preRulesOK &= errorCertStmtApproved(setDocument);
++        
++        return preRulesOK;
++    }
++    
++    /**
++     * Calls private methods to determine whether to show Error Certification Statement. 
++     * @param setDocument
++     * @return false if Error Certification Statement isn't approved; true if Error Certification Statement
++     *  is approved, and by default
++     */
++    private boolean errorCertStmtApproved(SalaryExpenseTransferDocument setDocument) {
++        boolean fiscalOfficerNode = checkRouteLevel(setDocument);
++        boolean parameterTriggered = checkTargetLines(setDocument);
++        
++        if (fiscalOfficerNode && parameterTriggered) {
++            return showErrorCertStmt();
++        }
++        return true;
++    }
++    
++    /**
++     * This method checks the current route level. If it is at the "Account" route node, then the fiscal officer
++     * is looking at the SET. 
++     * @return true if it's at the "Account" route note; false otherwise
++     */
++    private boolean checkRouteLevel(SalaryExpenseTransferDocument setDocument) {
++        String currNode = setDocument.getDocumentHeader().getWorkflowDocument().getCurrentRouteNodeNames();
++        LOG.debug("checkRouteLevel currNode: " + currNode);
++        if (currNode.equals(org.kuali.kfs.sys.KFSConstants.RouteLevelNames.ACCOUNT)) {
++            return true;
++        }
++        
++        return false;
++    }
++    
++    /**
++     * This method iterates through the target accounting lines to examine the original transaction date,
++     * the sub funds, and the ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter. 
++     * @param setDocument
++     * @return true if there is a transaction that contains the sub fund in the parameter and the original 
++     * transaction is older than the number of fiscal periods in the parameter; false otherwise 
++     */
++    private boolean checkTargetLines(SalaryExpenseTransferDocument setDocument) {
++        List<ExpenseTransferTargetAccountingLine> acctLines = setDocument.getTargetAccountingLines();
++        String paramFiscalPeriods;
++        Integer periodsFromParameter;
++        Integer currPayrollEndDateFiscalYear;
++        String currPayrollEndDateFiscalPeriodCode;
++        UniversityDate currUnivDate = getUniversityDateService().getCurrentUniversityDate();
++        Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
++        String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
++
++        for (ExpenseTransferTargetAccountingLine currentTargetLine : (List<ExpenseTransferTargetAccountingLine>) acctLines) {
++            paramFiscalPeriods = checkCurrentSubFund(currentTargetLine);
++
++            if (paramFiscalPeriods != null) {
++                LOG.debug("paramFiscalPeriods: " + paramFiscalPeriods);
++                
++                currPayrollEndDateFiscalYear = currentTargetLine.getPayrollEndDateFiscalYear();
++                LOG.debug("target line fiscal year: " + currPayrollEndDateFiscalYear);
++                    
++                if (currPayrollEndDateFiscalYear < currFiscalYear) {  // if in diff FY, return true
++                    LOG.debug("different fiscal year");
++                    return true;
++                }
++                    
++                currPayrollEndDateFiscalPeriodCode = currentTargetLine.getPayrollEndDateFiscalPeriodCode();
++                LOG.debug("target line fiscal period: " + currPayrollEndDateFiscalPeriodCode);
++                    
++                periodsFromParameter = new Integer(paramFiscalPeriods);                                    
++                   
++                // if fiscal period is more than periodsFromParameter older than the transaction being moved, return true
++                if (Integer.valueOf(currFiscalPeriod) - (Integer.valueOf(currPayrollEndDateFiscalPeriodCode)) >= periodsFromParameter) {
++                    LOG.debug("older transaction");
++                   return true;
++                }
++            }
++        }
++        return false;
++    }
++    
++    /**
++     * This method checks the sub fund associated with the account in an accounting line.
++     * @param currentTargetLine
++     * @return number of fiscal periods from ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter if it contains
++     * the sub fund in the currentTargetLine; null of no match
++     */
++    protected String checkCurrentSubFund(ExpenseTransferTargetAccountingLine currentTargetLine) {        
++        SubFundGroup subFundGroup = currentTargetLine.getAccount().getSubFundGroup();
++        return getParameterService().getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, subFundGroup.getSubFundGroupCode());
++    }    
++    
++    /**
++     * Shows the Error Certification Statement and returns the result.
++     * @return true if the Error Certification Statement returns a "Yes"; false otherwise
++     */
++    private boolean showErrorCertStmt() {
++        String questionText = SpringContext.getBean(KualiConfigurationService.class).getPropertyString(KFSKeyConstants.QUESTION_ERROR_CERTIFICATION_STMT);
++        boolean approved = super.askOrAnalyzeYesNoQuestion(KFSConstants.ErrorCertificationConstants.GENERATE_ERROR_CERTIFICATION_STMT_ID, questionText);
++
++        if (!approved) {
++            super.event.setActionForwardName(RiceConstants.MAPPING_BASIC);
++        }
++        return approved;
++    }
++    
++    /**
++     * Gets the universityDateService attribute. 
++     * @return Returns the universityDateService.
++     */
++    public UniversityDateService getUniversityDateService() {
++        return SpringContext.getBean(UniversityDateService.class);
++    }
++
++   /**
++     * Gets the parameterService attribute. 
++     * @return Returns the parameterService.
++     */
++    public ParameterService getParameterService() {
++        return SpringContext.getBean(ParameterService.class);
++    }  
++}

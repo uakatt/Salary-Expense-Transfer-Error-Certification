@@ -1,0 +1,13 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/validation/impl/GeneralErrorCorrectionDocumentPreRules.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/validation/impl/GeneralErrorCorrectionDocumentPreRules.java	(revision 4607)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/validation/impl/GeneralErrorCorrectionDocumentPreRules.java	(revision 4608)
+@@ -180,7 +180,7 @@
+      */
+     private boolean showErrorCertStmt() {
+         String questionText = SpringContext.getBean(KualiConfigurationService.class).getPropertyString(KFSKeyConstants.QUESTION_ERROR_CERTIFICATION_STMT);
+-        boolean approved = super.askOrAnalyzeYesNoQuestion(KFSConstants.GeneralErrorCorrectionDocumentConstants.GENERATE_ERROR_CERTIFICATION_STMT_ID, questionText);
++        boolean approved = super.askOrAnalyzeYesNoQuestion(KFSConstants.ErrorCertificationConstants.GENERATE_ERROR_CERTIFICATION_STMT_ID, questionText);
+ 
+         if (!approved) {
+             super.event.setActionForwardName(RiceConstants.MAPPING_BASIC);

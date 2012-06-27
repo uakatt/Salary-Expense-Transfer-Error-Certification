@@ -1,0 +1,13 @@
+Index: work/web-root/jsp/module/ld/SalaryExpenseTransfer.jsp
+===================================================================
+--- work/web-root/jsp/module/ld/SalaryExpenseTransfer.jsp	(revision 4425)
++++ work/web-root/jsp/module/ld/SalaryExpenseTransfer.jsp	(revision 4426)
+@@ -106,6 +106,8 @@
+ 	       	<sys-java:accountingLineGroup collectionPropertyName="document.targetAccountingLines" collectionItemPropertyName="document.targetAccountingLine" attributeGroupName="target" />
+ 		</sys-java:accountingLines>
+ 	</kul:tab> 
++
++	<fp:errorCertification documentAttributes="${DataDictionary.ErrorCertification.attributes}" />
+ 	     
+ 	<ld:laborLedgerPendingEntries />
+     <kul:notes />

@@ -1,0 +1,16 @@
+Index: work/db/scripts/arizona/schema-oracle.sql
+===================================================================
+--- work/db/scripts/arizona/schema-oracle.sql	(revision 4427)
++++ work/db/scripts/arizona/schema-oracle.sql	(revision 4428)
+@@ -216,3 +216,10 @@
+ )
+ ;
+ alter table KRIM_PRNCPL_T drop constraint KRIM_PRNCIPL_TR1;
++
++ALTER TABLE LD_EXP_TRNFR_DOC_T
++ADD ERROR_CERT_ID DECIMAL(27);
++ALTER TABLE LD_EXP_TRNFR_DOC_T
++ADD CONSTRAINT LD_ERROR_CERT_T_TC0  
++FOREIGN KEY (ERROR_CERT_ID)
++REFERENCES FP_ERROR_CERT_T (ERROR_CERT_ID) ON DELETE CASCADE;
+\ No newline at end of file

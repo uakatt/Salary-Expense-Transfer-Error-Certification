@@ -1,0 +1,21 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java	(revision 5703)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java	(revision 5704)
+@@ -16,10 +16,15 @@
+ package edu.arizona.kfs.module.ld.document.web.struts;
+ 
+ import edu.arizona.kfs.fp.businessobject.ErrorCertification;
+-import edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument;
++import edu.arizona.kfs.module.ld.document.YearEndSalaryExpenseTransferDocument;
+ 
+ public class YearEndSalaryExpenseTransferForm extends SalaryExpenseTransferForm {
+     public YearEndSalaryExpenseTransferForm() {
+         super();
+     }  
++    
++    @Override
++    protected String getDefaultDocumentTypeName() {
++        return "YEST";
++    }
+ }

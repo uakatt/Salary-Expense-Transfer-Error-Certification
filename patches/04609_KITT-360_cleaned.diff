@@ -1,0 +1,21 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 4608)
++++ work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 4609)
+@@ -33,7 +33,6 @@
+ import org.kuali.rice.kns.util.GlobalVariables;
+ import org.kuali.rice.kns.util.KNSPropertyConstants;
+ 
+-import edu.arizona.kfs.fp.document.validation.impl.EntryNotFoundException;
+ import edu.arizona.kfs.fp.document.validation.impl.ErrorCertificationValidation;
+ import edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument;
+ import edu.arizona.kfs.sys.AZKFSConstants;
+@@ -93,7 +92,7 @@
+      *  parameter; false otherwise
+      */
+     protected boolean defaultNumberOfFiscalPeriodsCheck(List<ExpenseTransferSourceAccountingLine> sourceAccountingLines, List<ExpenseTransferTargetAccountingLine> targetAccountingLines) {
+-        String numFiscalPeriods = parameterService.getParameterValue(org.kuali.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED);
++        String numFiscalPeriods = parameterService.getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED);
+         LOG.debug("numFiscalPeriods: " + numFiscalPeriods);
+         Integer periodsFromParameter = new Integer(numFiscalPeriods);
+         Integer currPayrollEndDateFiscalYear;

@@ -1,0 +1,171 @@
+Index: test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+===================================================================
+--- test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 0)
++++ test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 4601)
+@@ -0,0 +1,166 @@
++/*
++ * Copyright 2009 The Kuali Foundation.
++ * 
++ * Licensed under the Educational Community License, Version 1.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ * 
++ * http://www.opensource.org/licenses/ecl1.php
++ * 
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package edu.arizona.kfs.module.ld.document.validation;
++
++import java.util.Collection;
++import java.util.HashMap;
++import java.util.Map;
++
++import org.kuali.kfs.coa.businessobject.Account;
++import org.kuali.kfs.coa.businessobject.SubFundGroup;
++import org.kuali.kfs.gl.businessobject.Entry;
++import org.kuali.kfs.module.ld.businessobject.ExpenseTransferSourceAccountingLine;
++import org.kuali.kfs.module.ld.businessobject.ExpenseTransferTargetAccountingLine;
++import org.kuali.kfs.sys.ConfigureContext;
++import org.kuali.kfs.sys.KFSPropertyConstants;
++import org.kuali.kfs.sys.businessobject.UniversityDate;
++import org.kuali.kfs.sys.context.KualiTestBase;
++import org.kuali.kfs.sys.context.SpringContext;
++import org.kuali.kfs.sys.document.validation.event.AttributedDocumentEventBase;
++import org.kuali.kfs.sys.service.UniversityDateService;
++import org.kuali.kfs.sys.service.impl.UniversityDateServiceImpl;
++import org.kuali.rice.kns.service.BusinessObjectService;
++import org.kuali.rice.kns.service.DateTimeService;
++import org.kuali.rice.kns.util.GlobalVariables;
++import org.kuali.rice.kns.util.KNSPropertyConstants;
++
++import edu.arizona.kfs.fp.businessobject.ErrorCertification;
++import edu.arizona.kfs.fp.document.validation.impl.EntryNotFoundException;
++import edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument;
++import edu.arizona.kfs.module.ld.document.validation.impl.SalaryExpenseTransferErrorCertificationValidation;
++import edu.arizona.kfs.sys.KFSKeyConstants;
++
++@ConfigureContext
++public class SETErrorCertificationValidationTest extends KualiTestBase {
++    private SalaryExpenseTransferDocument set;
++    private MyAttributedDocumentEvent event;
++    private BusinessObjectService boService;
++    private MyUniversityDateService universityDateService;
++    private ErrorCertification errorCertification;
++        
++    protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(SETErrorCertificationValidationTest.class);
++    
++    public void setUp() throws Exception {
++        super.setUp();
++        this.set = new SalaryExpenseTransferDocument();
++        this.event = new MyAttributedDocumentEvent(set);
++        boService = SpringContext.getBean(BusinessObjectService.class);
++        universityDateService = new MyUniversityDateService();
++        this.errorCertification = new ErrorCertification();
++        errorCertification.setErrorCertID(new Integer("1"));
++    }    
++    
++    public void testSourceAccountingLine() {
++        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
++        validation.setUniversityDateService(universityDateService);
++               
++        // create a source accounting line
++        ExpenseTransferSourceAccountingLine sourceAccountingLine = new ExpenseTransferSourceAccountingLine();
++        sourceAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear());
++        sourceAccountingLine.setPayrollEndDateFiscalPeriodCode("11");
++        
++        // modify error certification's state as completely filled out
++        setUpErrorCertificationObject(true);
++                
++        set.addSourceAccountingLine(sourceAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertFalse("Unexpected requirement of Error Certification Tab.", hasError);        
++    }
++
++    public void testOlderSourceAccountingLine() {
++        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
++        validation.setUniversityDateService(universityDateService);
++               
++        // create a source accounting line
++        ExpenseTransferSourceAccountingLine sourceAccountingLine = new ExpenseTransferSourceAccountingLine();
++        sourceAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear());
++        sourceAccountingLine.setPayrollEndDateFiscalPeriodCode("7");
++        
++        // modify error certification's state as partially filled out
++        setUpErrorCertificationObject(false);
++        
++        set.addSourceAccountingLine(sourceAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
++    }
++    
++    @SuppressWarnings("deprecation")
++    public void testOlderTargetAccountingLine() {
++        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
++        validation.setUniversityDateService(universityDateService);
++
++        Account account = new Account();
++        SubFundGroup subFundGroup = new SubFundGroup();
++        subFundGroup.setSubFundGroupCode("FEDSUB");
++        account.setSubFundGroup(subFundGroup);
++         
++        // create a target accounting line for testing in set object
++        ExpenseTransferTargetAccountingLine targetAccountingLine = new ExpenseTransferTargetAccountingLine();
++        targetAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear());
++        targetAccountingLine.setPayrollEndDateFiscalPeriodCode("7");
++        targetAccountingLine.setAccount(account);
++        
++        // modify error certification's state as partially filled out
++        setUpErrorCertificationObject(false);
++                
++        set.addTargetAccountingLine(targetAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
++    }
++    
++    public void setUpErrorCertificationObject(boolean isCompleted) {
++        if (isCompleted) {
++            errorCertification.setErrorCorrectionReason("test reason");
++            errorCertification.setErrorDescription("test desc");
++            errorCertification.setExpenditureDescription("test description");
++            errorCertification.setExpenditureProjectBenefit("test benefit");
++        }
++        else {
++            errorCertification.setErrorCorrectionReason("test reason");
++            errorCertification.setErrorDescription("test desc");
++            errorCertification.setExpenditureDescription("");
++            errorCertification.setExpenditureProjectBenefit("");
++        }
++    }
++    
++    static class MyUniversityDateService extends UniversityDateServiceImpl {
++    
++        public UniversityDate getCurrentUniversityDate() {
++            UniversityDate universityDate = SpringContext.getBean(UniversityDateService.class).getCurrentUniversityDate();
++            universityDate.setUniversityFiscalAccountingPeriod("13");
++            return universityDate;
++        }
++    }
++    
++    static class MyAttributedDocumentEvent extends AttributedDocumentEventBase {
++        public MyAttributedDocumentEvent(SalaryExpenseTransferDocument d) {
++            super("", "", d);          
++        }
++    
++    }
++}

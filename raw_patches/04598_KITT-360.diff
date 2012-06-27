@@ -1,0 +1,208 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 0)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 4598)
+@@ -0,0 +1,203 @@
++/*
++ * Copyright 2009 The Kuali Foundation.
++ * 
++ * Licensed under the Educational Community License, Version 1.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ * 
++ * http://www.opensource.org/licenses/ecl1.php
++ * 
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package edu.arizona.kfs.module.ld.document.validation.impl;
++
++import static org.kuali.kfs.sys.KFSPropertyConstants.REFERENCE_NUMBER;
++
++import java.util.Calendar;
++import java.util.Date;
++import java.util.List;
++
++import org.kuali.kfs.coa.businessobject.SubFundGroup;
++import org.kuali.kfs.module.ld.businessobject.ExpenseTransferSourceAccountingLine;
++import org.kuali.kfs.module.ld.businessobject.ExpenseTransferTargetAccountingLine;
++import org.kuali.kfs.sys.businessobject.AccountingLineBase;
++import org.kuali.kfs.sys.businessobject.UniversityDate;
++import org.kuali.kfs.sys.document.validation.GenericValidation;
++import org.kuali.kfs.sys.document.validation.event.AttributedDocumentEvent;
++import org.kuali.kfs.sys.service.UniversityDateService;
++import org.kuali.rice.kns.service.ParameterService;
++import org.kuali.rice.kns.util.GlobalVariables;
++import org.kuali.rice.kns.util.KNSPropertyConstants;
++
++import edu.arizona.kfs.fp.document.validation.impl.EntryNotFoundException;
++import edu.arizona.kfs.fp.document.validation.impl.ErrorCertificationValidation;
++import edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument;
++import edu.arizona.kfs.sys.AZKFSConstants;
++import edu.arizona.kfs.sys.KFSConstants;
++import edu.arizona.kfs.sys.KFSKeyConstants;
++
++public class SalaryExpenseTransferErrorCertificationValidation extends GenericValidation {
++    private ParameterService parameterService;
++    private UniversityDateService universityDateService;
++    
++    protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(SalaryExpenseTransferErrorCertificationValidation.class);
++    
++    public boolean validate(AttributedDocumentEvent event) {
++        LOG.debug("validate error certification tab called");
++        SalaryExpenseTransferDocument currDocument = (SalaryExpenseTransferDocument)event.getDocument();
++        
++        boolean success = true;
++        boolean olderThanFiscalPeriods = false;
++        int numBlankFields = 0;
++        List<ExpenseTransferSourceAccountingLine> sourceAcctLines;
++        List<ExpenseTransferTargetAccountingLine> targetAcctLines;
++        
++        // check fiscal periods and the system parameters involving age of transaction
++        sourceAcctLines = currDocument.getSourceAccountingLines();
++        targetAcctLines = currDocument.getTargetAccountingLines();
++        olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(sourceAcctLines, targetAcctLines);
++        LOG.debug("olderThanFiscalPeriods for all accounting lines: " + olderThanFiscalPeriods);            
++        
++        // check for blank fields in the Error Certification Tab
++        ErrorCertificationValidation ecValidation = new ErrorCertificationValidation();
++        numBlankFields = ecValidation.errorCertificationBlankFieldsCheck(currDocument);
++        LOG.debug("numBlankFields: " + numBlankFields);
++        
++        // if there is a transaction older than DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED and Error Certification tab is partially filled
++        if (olderThanFiscalPeriods && ((numBlankFields > 0) && (numBlankFields <= KFSConstants.ErrorCertificationConstants.NUM_ERROR_CERT_FIELDS))) {
++            GlobalVariables.getErrorMap().putErrorForSectionId(KFSKeyConstants.ERROR_ERROR_CERT_KEY, KFSKeyConstants.ERROR_ERROR_CERT_FISCAL_PER_PARAM_TRIGGERED, "error.errorCert.fiscalPerParamTriggered");
++        }
++
++        return success;
++    }
++
++    /**
++     * Determines if the age of the transactions are older than the value in the parameter.
++     * If checking source accounting lines, use the fiscal periods in the
++     *  DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED parameter.
++     * If checking target accounting lines, check account's sub fund and maybe use
++     *  ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter.
++     * 
++     * <ol>
++     *   <li>Loop through {@link ExpenseTransferSourceAccountingLine} or {@link ExpenseTransferTargetAccountingLine}
++     *    instances in the {@link SalaryExpenseTransferDocument}.</li>
++     *   <li>Get fiscal year and fiscal period of each line.</li>
++     * </ol> 
++     * @param sourceAccountingLines
++     * @param targetAccountingLines
++     * @return true if all of the transaction dates are younger by fiscal periods than specified in the appropriate
++     *  parameter; false otherwise
++     */
++    protected boolean defaultNumberOfFiscalPeriodsCheck(List<ExpenseTransferSourceAccountingLine> sourceAccountingLines, List<ExpenseTransferTargetAccountingLine> targetAccountingLines) {
++        String numFiscalPeriods = parameterService.getParameterValue(org.kuali.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED);
++        LOG.debug("numFiscalPeriods: " + numFiscalPeriods);
++        Integer periodsFromParameter = new Integer(numFiscalPeriods);
++        Integer currPayrollEndDateFiscalYear;
++        String currPayrollEndDateFiscalPeriodCode;
++        UniversityDate currUnivDate = universityDateService.getCurrentUniversityDate();
++        Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
++        String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
++        LOG.debug("currFiscalPeriod: " + currFiscalPeriod);
++        
++        // check source accounting lines
++        for (ExpenseTransferSourceAccountingLine currentSourceLine : (List<ExpenseTransferSourceAccountingLine>) sourceAccountingLines) {
++            currPayrollEndDateFiscalYear = currentSourceLine.getPayrollEndDateFiscalYear();
++            LOG.debug("source line fiscal year: " + currPayrollEndDateFiscalYear);
++            
++            currPayrollEndDateFiscalPeriodCode = currentSourceLine.getPayrollEndDateFiscalPeriodCode();
++            LOG.debug("source line fiscal period: " + currPayrollEndDateFiscalPeriodCode);
++            
++            // if in diff FY, return false immediately
++            if (currPayrollEndDateFiscalYear < currFiscalYear) {
++                LOG.debug("different fiscal year");
++                return false;
++            }
++            
++            // if current fiscal period is more than periodsFromParameter older than the transaction being moved, return false
++            if (Integer.valueOf(currFiscalPeriod) - (Integer.valueOf(currPayrollEndDateFiscalPeriodCode)) >= periodsFromParameter) {
++                LOG.debug("older transaction");
++                return false;
++            }            
++        }
++
++        // check target accounting lines
++        for (ExpenseTransferTargetAccountingLine currentTargetLine : (List<ExpenseTransferTargetAccountingLine>) targetAccountingLines) {
++            currPayrollEndDateFiscalYear = currentTargetLine.getPayrollEndDateFiscalYear();
++            LOG.debug("target line fiscal year: " + currPayrollEndDateFiscalYear);
++            
++            currPayrollEndDateFiscalPeriodCode = currentTargetLine.getPayrollEndDateFiscalPeriodCode();
++            LOG.debug("target line fiscal period: " + currPayrollEndDateFiscalPeriodCode);
++            
++            // check sub fund associated with the target acct line
++            periodsFromParameter = checkCurrentSubFund(periodsFromParameter, currentTargetLine);
++            LOG.debug("periodsFromParameter: " + periodsFromParameter);
++                                           
++            if (currPayrollEndDateFiscalYear < currFiscalYear) {  // if in diff FY, return false immediately
++                return false;
++            }
++            
++            // if fiscal period is more than periodsFromParameter older than the transaction being moved, return false
++            if (Integer.valueOf(currFiscalPeriod) - (Integer.valueOf(currPayrollEndDateFiscalPeriodCode)) >= periodsFromParameter) {
++                return false;
++            }
++        }
++        return true;
++    }
++    
++    /**
++     * This method checks the sub fund associated with the account in a target accounting line.
++     * If sub fund is in ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter, use different # of fiscal periods
++     * @param periodsFromParameter The periods in DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED
++     * @param currentTargetLine
++     * @return the periodsFromParameter, which may have value in ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND
++     */
++    protected Integer checkCurrentSubFund(Integer periodsFromParameter, ExpenseTransferTargetAccountingLine currentTargetLine) {
++        LOG.debug("in checkCurrentSubFund");
++        SubFundGroup subFundGroup = currentTargetLine.getAccount().getSubFundGroup();
++        String newComparePeriods = parameterService.getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, subFundGroup.getSubFundGroupCode());
++                        
++        if (newComparePeriods != null) {
++            periodsFromParameter = new Integer(newComparePeriods);
++        }
++              
++        return periodsFromParameter;
++    }
++    
++    /**
++     * Gets the parameterService attribute. 
++     * @return Returns the parameterService.
++     */
++    public ParameterService getParameterService() {
++        return parameterService;
++    }
++    
++    /**
++     * Sets the parameterService attribute value.
++     * @param parameterService The parameterService to set.
++     */
++    public void setParameterService(ParameterService parameterService) {
++        this.parameterService = parameterService;
++    }
++
++    /**
++     * Gets the universityDateService attribute. 
++     * @return Returns the universityDateService.
++     */
++    public UniversityDateService getUniversityDateService() {
++        return universityDateService;
++    }
++
++    /**
++     * Sets the universityDateService attribute value.
++     * @param universityDateService The universityDateService to set.
++     */
++    public void setUniversityDateService(UniversityDateService universityDateService) {
++        this.universityDateService = universityDateService;
++    }
++    
++    
++}

@@ -1,0 +1,57 @@
+Index: work/src/edu/arizona/kfs/fp/document/validation/impl/ErrorCertificationValidation.java
+===================================================================
+--- work/src/edu/arizona/kfs/fp/document/validation/impl/ErrorCertificationValidation.java	(revision 4588)
++++ work/src/edu/arizona/kfs/fp/document/validation/impl/ErrorCertificationValidation.java	(revision 4589)
+@@ -16,28 +16,31 @@
+ package edu.arizona.kfs.fp.document.validation.impl;
+ 
+ import org.apache.commons.lang.StringUtils;
++import org.kuali.kfs.sys.context.SpringContext;
++import org.kuali.kfs.sys.document.AccountingDocumentBase;
+ import org.kuali.kfs.sys.document.validation.GenericValidation;
+ import org.kuali.kfs.sys.document.validation.event.AttributedDocumentEvent;
++import org.kuali.rice.kew.exception.WorkflowException;
++import org.kuali.rice.kns.service.DocumentService;
+ import org.kuali.rice.kns.util.GlobalVariables;
+ 
+ import edu.arizona.kfs.fp.businessobject.ErrorCertification;
+-import edu.arizona.kfs.fp.document.GeneralErrorCorrectionDocument;
++import edu.arizona.kfs.fp.document.ErrorCertifiable;
+ import edu.arizona.kfs.sys.KFSConstants;
+ import edu.arizona.kfs.sys.KFSKeyConstants;
+ 
+ public class ErrorCertificationValidation extends GenericValidation {
+     private static int NUM_ERROR_CERT_FIELDS = 4;
+-    
++        
+     protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ErrorCertificationValidation.class);
+     
+-    public boolean validate(AttributedDocumentEvent event) {
+-        GeneralErrorCorrectionDocument currDocument = (GeneralErrorCorrectionDocument)event.getDocument();
+-        int numBlankFields = errorCertificationBlankFieldsCheck(currDocument);
+-        LOG.debug("numBlankFields: " + numBlankFields);
++    public boolean validate(AttributedDocumentEvent event) {       
++        int numBlankFields = errorCertificationBlankFieldsCheck((ErrorCertifiable) event.getDocument());
++        LOG.debug("numBlankFields: " + numBlankFields);      
+         
+         // if Error Certification tab is partially filled out
+         if ((numBlankFields > 1) && (numBlankFields < KFSConstants.ErrorCertificationConstants.NUM_ERROR_CERT_FIELDS)) {
+-            GlobalVariables.getErrorMap().putErrorForSectionId("document.errorCertification", KFSKeyConstants.ERROR_ERROR_CERT_FIELDS_REQ, "error.errorCert.fieldsReq");
++            GlobalVariables.getErrorMap().putErrorForSectionId(KFSKeyConstants.ERROR_ERROR_CERT_KEY, KFSKeyConstants.ERROR_ERROR_CERT_FIELDS_REQ, "error.errorCert.fieldsReq");
+             return false;
+         }
+         
+@@ -49,10 +52,11 @@
+      * @param document
+      * @return blankFieldCount the number of blank fields in the tab
+      */
+-    public int errorCertificationBlankFieldsCheck(GeneralErrorCorrectionDocument document) {
++    public int errorCertificationBlankFieldsCheck(ErrorCertifiable document) {
+         int blankFieldCount = 0;
+-        ErrorCertification ecTab = document.getErrorCertification();
+         
++        ErrorCertification ecTab = document.getErrorCertification();               
++        
+         if (StringUtils.isBlank(ecTab.getExpenditureDescription())) {
+             blankFieldCount++;
+         }

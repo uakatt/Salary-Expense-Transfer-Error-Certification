@@ -1,0 +1,359 @@
+------------------------------------------------------------------------
+r4421 | hlo | 2009-08-14 18:40:45 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4422 | hlo | 2009-08-14 18:41:01 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/SalaryExpenseTransferDocument.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4423 | hlo | 2009-08-14 18:41:16 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/SalaryExpenseTransferForm.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4424 | hlo | 2009-08-14 18:41:30 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/web-root/WEB-INF/struts-config.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4425 | hlo | 2009-08-14 18:41:43 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4426 | hlo | 2009-08-14 18:42:39 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/web-root/jsp/module/ld/SalaryExpenseTransfer.jsp
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4427 | hlo | 2009-08-14 18:42:54 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/spring-ld.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4428 | hlo | 2009-08-14 18:43:10 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/db/scripts/arizona/schema-oracle.sql
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4429 | hlo | 2009-08-14 18:43:25 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/AZKFSConstants.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4430 | hlo | 2009-08-14 18:43:51 -0700 (Fri, 14 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/db/scripts/arizona/data.sql
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4589 | hlo | 2009-08-28 17:10:34 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/validation/impl/ErrorCertificationValidation.java
+
+KITT-360  Used ErrorCertifiable interface for document.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4591 | hlo | 2009-08-28 17:16:14 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/KFSKeyConstants.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4593 | hlo | 2009-08-28 17:19:07 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/ErrorCertifiable.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4594 | hlo | 2009-08-28 17:19:52 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4595 | hlo | 2009-08-28 17:20:19 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/spring-ld.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4596 | hlo | 2009-08-28 17:20:44 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/arizona-ApplicationResources.properties
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4597 | hlo | 2009-08-28 17:21:08 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4598 | hlo | 2009-08-28 17:26:01 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4599 | hlo | 2009-08-28 17:26:29 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/configuration
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/configuration/SalaryExpenseTransferValidations.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4600 | hlo | 2009-08-28 17:26:53 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/SalaryExpenseTransferDocument.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4601 | hlo | 2009-08-28 17:27:20 -0700 (Fri, 28 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document
+   A /financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation
+   A /financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4608 | hlo | 2009-08-31 11:18:40 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/fp/document/validation/impl/GeneralErrorCorrectionDocumentPreRules.java
+
+KITT-360 Updated after I refactored KFSConstants for SET.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4609 | hlo | 2009-08-31 13:12:47 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+
+KITT-360 Fixed package typo.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4610 | hlo | 2009-08-31 15:25:58 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/KFSConstants.java
+
+KITT-360 Updated for SET.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4612 | hlo | 2009-08-31 15:50:00 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/db/scripts/arizona/sampleLaborData.sql
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4613 | hlo | 2009-08-31 17:21:55 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4614 | hlo | 2009-08-31 17:22:57 -0700 (Mon, 31 Aug 2009) | 1 line
+Changed paths:
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+
+KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4641 | hlo | 2009-09-01 14:51:15 -0700 (Tue, 01 Sep 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+
+KITT-360 Added target accounting line unit test.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4661 | hlo | 2009-09-02 16:09:08 -0700 (Wed, 02 Sep 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+
+KITT-360 Refactored to make more use of validation code.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4662 | hlo | 2009-09-02 16:10:13 -0700 (Wed, 02 Sep 2009) | 1 line
+Changed paths:
+   R /financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+
+KITT-360 Added more unit tests.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r4663 | hlo | 2009-09-02 16:57:36 -0700 (Wed, 02 Sep 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+
+KITT-360 Code refactoring and cleanup.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5240 | hlo | 2009-10-02 14:41:20 -0700 (Fri, 02 Oct 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/web-root/WEB-INF/struts-config.xml
+
+KITT-353 KITT-360 Re-adding previous code changes.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5702 | hlo | 2009-11-09 17:53:33 -0700 (Mon, 09 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+
+KITT-360 Modified code so that the SalaryExpenseTransferDocument.class isn't hard-coded. Made it more general so YEST could use these validations.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5703 | hlo | 2009-11-09 18:25:32 -0700 (Mon, 09 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary/YearEndSalaryExpenseTransferDocument.xml
+
+KITT-360 Committing to test in DEV tomorrow.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5704 | hlo | 2009-11-09 18:26:03 -0700 (Mon, 09 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java
+
+KITT-360 Committing to test in DEV tomorrow.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5705 | hlo | 2009-11-09 18:26:16 -0700 (Mon, 09 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/YearEndSalaryExpenseTransferDocument.java
+
+KITT-360 Committing to test in DEV tomorrow.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5706 | hlo | 2009-11-09 18:26:31 -0700 (Mon, 09 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml
+
+KITT-360 Committing to test in DEV tomorrow.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5765 | hlo | 2009-11-10 11:08:52 -0700 (Tue, 10 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/db/scripts/arizona/data.sql
+
+KITT-360 Adding YEST parms. Also re-adding VALID_OBJECT_SUB_TYPES_BY_SUB_FUND_GROUP.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r5891 | hlo | 2009-11-24 14:32:50 -0700 (Tue, 24 Nov 2009) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/datadictionary/YearEndSalaryExpenseTransferDocument.xml
+   A /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/configuration/YearEndSalaryExpenseTransferValidations.xml
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/spring-ld.xml
+
+KITT-360 Added temp fix for account validation error.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r6864 | hlo | 2010-01-06 14:28:12 -0700 (Wed, 06 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/db/scripts/arizona/data.sql
+
+KITT-353, KITT-360 Adding parms for YEGE. Also adding back parms for YEST.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7230 | hlo | 2010-01-20 11:22:05 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java
+
+KITT-360 Modified because SETForm was removed.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7231 | hlo | 2010-01-20 11:22:33 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   D /financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/web/struts/SalaryExpenseTransferForm.java
+
+KITT-360 Removed because this class is unnecessary.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7232 | hlo | 2010-01-20 11:24:08 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/web-root/WEB-INF/struts-config.xml
+
+KITT-353, KITT-360 Modified because edu/arizona versions of GEC and SET forms removed.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7233 | hlo | 2010-01-20 11:25:38 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/trunk/work/db/scripts/arizona/data.sql
+
+KITT-353, KITT-360 Re-adding YEST and YEGE parms.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7238 | hlo | 2010-01-20 16:38:23 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/branches/3.0/work/db/scripts/arizona/data.sql
+
+Merging with KITT-353, KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7241 | hlo | 2010-01-20 16:49:42 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs/branches/3.0/work/web-root/WEB-INF/struts-config.xml
+
+Merging KITT-353, KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7242 | hlo | 2010-01-20 16:58:21 -0700 (Wed, 20 Jan 2010) | 1 line
+Changed paths:
+   D /financial-system/kfs/branches/3.0/work/src/edu/arizona/kfs/module/ld/document/web/struts/SalaryExpenseTransferForm.java
+   M /financial-system/kfs/branches/3.0/work/src/edu/arizona/kfs/module/ld/document/web/struts/YearEndSalaryExpenseTransferForm.java
+
+Merging KITT-360
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7270 | hlo | 2010-01-21 15:19:36 -0700 (Thu, 21 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs-cfg-dbs/trunk/latest/dat/KRNS_PARM_T.xml
+   A /financial-system/kfs-cfg-dbs/trunk/update/KITT-744.xml
+
+KITT-744 Adding parms for YEST and YEGE.
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r7272 | hlo | 2010-01-21 15:27:26 -0700 (Thu, 21 Jan 2010) | 1 line
+Changed paths:
+   M /financial-system/kfs-cfg-dbs/trunk/update.xml
+
+KITT-744 Including parms for YEST and YEGE.
+------------------------------------------------------------------------

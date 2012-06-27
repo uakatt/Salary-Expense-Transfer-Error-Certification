@@ -1,0 +1,21 @@
+Index: work/src/edu/arizona/kfs/sys/KFSConstants.java
+===================================================================
+--- work/src/edu/arizona/kfs/sys/KFSConstants.java	(revision 4609)
++++ work/src/edu/arizona/kfs/sys/KFSConstants.java	(revision 4610)
+@@ -21,14 +21,9 @@
+ /**
+  * This class is used to define global constants.
+  */
+-public class KFSConstants extends JSTLConstants implements ParameterKeyConstants {
+-
+-    
+-    public static class GeneralErrorCorrectionDocumentConstants {     
+-        public static final String GENERATE_ERROR_CERTIFICATION_STMT_ID = "GenerateErrorCertStmt";
+-    }
+-    
++public class KFSConstants extends JSTLConstants implements ParameterKeyConstants {   
+     public static class ErrorCertificationConstants {
++        public static final String GENERATE_ERROR_CERTIFICATION_STMT_ID = "GenerateErrorCertStmt";
+         public static final int NUM_ERROR_CERT_FIELDS = 4;        
+     }
+ }

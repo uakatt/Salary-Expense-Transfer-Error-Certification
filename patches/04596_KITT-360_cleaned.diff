@@ -1,0 +1,26 @@
+Index: work/src/arizona-ApplicationResources.properties
+===================================================================
+--- work/src/arizona-ApplicationResources.properties	(revision 4595)
++++ work/src/arizona-ApplicationResources.properties	(revision 4596)
+@@ -3,8 +3,6 @@
+ 
+ # GEC Messages
+ error.gec.ref.number = Reference number entered does not correspond to an existing GL transaction.
+-error.errorCert.dateParamTriggered = The Error Certification tab must be completed because a transaction being moved is greater than the number of days authorized. (Troubleshooting information: parameters: DEFAULT_NUMBER_OF_DAYS_ERROR_CERTIFICATION_TAB_REQUIRED or EFFORT_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, module: KFS-FP, component: GeneralErrorCorrection)
+-error.errorCert.fieldsReq = If any fields in this tab are completed, all fields must be completed.
+ question.gec.errorCertStmt = I hereby certify that these expenses were incurred for the goals, objectives, and benefit of grant/contract, and that the expenditure transfer is correct and proper.  In the event of a subsequent audit disallowance of this expense transfer for any reason, the Principal Investigator/Fiscal Officer and Department Head agree to be jointly responsible for handling this expense in a manner which is consistent with UA policy.
+ 
+ # AssetAwardHistory Messages
+@@ -14,4 +12,9 @@
+ 
+ 
+ message.batchUpload.title.bankTransactions=Bank TFile Batch Upload
+-message.batchUpload.error.bankTransactions=The File cannot be uploaded as it was already processed before
+\ No newline at end of file
++message.batchUpload.error.bankTransactions=The File cannot be uploaded as it was already processed before
++
++# Error Certification Messages
++error.errorCert.dateParamTriggered = The Error Certification tab must be completed because a transaction being moved is greater than the number of days authorized. (Troubleshooting information: parameters: DEFAULT_NUMBER_OF_DAYS_ERROR_CERTIFICATION_TAB_REQUIRED or ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, module: KFS-FP, component: GeneralErrorCorrection)
++error.errorCert.fieldsReq = If any fields in this tab are completed, all fields must be completed.
++error.errorCert.fiscalPerParamTriggered = The Error Certification tab must be completed because a transaction is greater than the number of fiscal periods authorized. (Troubleshooting information: parameters: DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED or ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, module: KFS-LD, component: SalaryExpenseTransfer) 
+\ No newline at end of file

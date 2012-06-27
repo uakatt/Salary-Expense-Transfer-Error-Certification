@@ -1,0 +1,215 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 4662)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferErrorCertificationValidation.java	(revision 4663)
+@@ -22,6 +22,7 @@
+ import java.util.List;
+ 
+ import org.kuali.kfs.coa.businessobject.SubFundGroup;
++import org.kuali.kfs.integration.ld.LaborLedgerExpenseTransferAccountingLine;
+ import org.kuali.kfs.module.ld.businessobject.ExpenseTransferSourceAccountingLine;
+ import org.kuali.kfs.module.ld.businessobject.ExpenseTransferTargetAccountingLine;
+ import org.kuali.kfs.sys.businessobject.AccountingLineBase;
+@@ -59,19 +60,14 @@
+         Integer defaultPeriodsFromParameter = new Integer(defaultNumFiscalPeriods);
+         LOG.debug("defaultPeriodsFromParameter: " + defaultPeriodsFromParameter);
+         
+-        UniversityDate currUnivDate = universityDateService.getCurrentUniversityDate();
+-        Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
+-        String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
+-        LOG.debug("currFiscalPeriod: " + currFiscalPeriod);
+-        
+         // check fiscal periods and the system parameters involving age of transaction
+         sourceAcctLines = currDocument.getSourceAccountingLines();        
+-        olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheckForSourceLines(sourceAcctLines, defaultPeriodsFromParameter, currFiscalYear, currFiscalPeriod);
++        olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument.getSourceAccountingLines(), defaultPeriodsFromParameter);
+         LOG.debug("olderThanFiscalPeriods for source accounting lines: " + olderThanFiscalPeriods);
+         
+         if (!olderThanFiscalPeriods) {
+             targetAcctLines = currDocument.getTargetAccountingLines();
+-            olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheckForTargetLines(targetAcctLines, defaultPeriodsFromParameter, currFiscalYear, currFiscalPeriod);
++            olderThanFiscalPeriods = !defaultNumberOfFiscalPeriodsCheck(currDocument.getTargetAccountingLines(), defaultPeriodsFromParameter);
+             LOG.debug("olderThanFiscalPeriods for target accounting lines: " + olderThanFiscalPeriods);
+         }
+         
+@@ -87,55 +83,12 @@
+ 
+         return success;
+     }
+-
+-    /**
+-     * Determines if the age of the transactions are older than the value in the parameter.
+-     * Since this checks source accounting lines, use the fiscal periods in the
+-     *  DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED parameter.
+-     *  
+-     * <ol>
+-     *   <li>Loop through {@link ExpenseTransferSourceAccountingLine}
+-     *    instances in the {@link SalaryExpenseTransferDocument}.</li>
+-     *   <li>Get fiscal year and fiscal period of each line.</li>
+-     * </ol> 
+-     * @param sourceAccountingLines
+-     * @param defaultPeriodsFromParameter
+-     * @param currFiscalYear
+-     * @param currFiscalPeriod 
+-     * @return true if all of the transaction dates are younger by fiscal periods than specified in the appropriate
+-     *  parameter; false otherwise
+-     */
+-    protected boolean defaultNumberOfFiscalPeriodsCheckForSourceLines (List<ExpenseTransferSourceAccountingLine> sourceAccountingLines, Integer defaultPeriodsFromParameter, Integer currFiscalYear, String currFiscalPeriod) {
+-        Integer currPayrollEndDateFiscalYear;
+-        String currPayrollEndDateFiscalPeriodCode;
+-        
+-        for (ExpenseTransferSourceAccountingLine currentSourceLine : (List<ExpenseTransferSourceAccountingLine>) sourceAccountingLines) {
+-            currPayrollEndDateFiscalYear = currentSourceLine.getPayrollEndDateFiscalYear();
+-            LOG.debug("source line fiscal year: " + currPayrollEndDateFiscalYear);
+-            
+-            currPayrollEndDateFiscalPeriodCode = currentSourceLine.getPayrollEndDateFiscalPeriodCode();
+-            LOG.debug("source line fiscal period: " + currPayrollEndDateFiscalPeriodCode);
+-            
+-            // if in different FY, return false immediately
+-            if (currPayrollEndDateFiscalYear < currFiscalYear) {
+-                LOG.debug("different fiscal year");
+-                return false;
+-            }
+-            
+-            // if current fiscal period is more than defaultPeriodsFromParameter older than the transaction being moved, return false
+-            if (Integer.valueOf(currFiscalPeriod) - (Integer.valueOf(currPayrollEndDateFiscalPeriodCode)) >= defaultPeriodsFromParameter) {
+-                LOG.debug("older transaction");
+-                return false;
+-            }            
+-        }
+-        
+-        return true;
+-    }
+     
+     /**
+      * Determines if the age of the transactions are older than the value in the parameter.
+      * By default, use the fiscal periods in periodsFromParameter.
+-     * Check account's sub fund and maybe use ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter.
++     * If a target accounting line, check account's sub fund and maybe use 
++     * ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND parameter.
+      * 
+      * <ol>
+      *   <li>Loop through {@link ExpenseTransferTargetAccountingLine}
+@@ -143,27 +96,32 @@
+      *   <li>Get fiscal year and fiscal period of each line.</li>
+      *   <li>Check sub fund of each line to possibly reassign periodsFromParameter.</li>
+      * </ol> 
+-     * @param targetAccountingLines
++     * @param accountingLines
+      * @param periodsFromParameter
+-     * @param currFiscalYear
+-     * @param currFiscalPeriod
+      * @return true if all of the transaction dates are younger by fiscal periods than specified in the appropriate
+      *  parameter; false otherwise
+      */
+-    protected boolean defaultNumberOfFiscalPeriodsCheckForTargetLines (List<ExpenseTransferTargetAccountingLine> targetAccountingLines, Integer periodsFromParameter, Integer currFiscalYear, String currFiscalPeriod) {
++    public boolean defaultNumberOfFiscalPeriodsCheck(List<LaborLedgerExpenseTransferAccountingLine> accountingLines, Integer periodsFromParameter) {
++        UniversityDate currUnivDate = universityDateService.getCurrentUniversityDate();
++        Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
++        String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
++        LOG.debug("currFiscalPeriod: " + currFiscalPeriod);
++        
+         Integer currPayrollEndDateFiscalYear;
+         String currPayrollEndDateFiscalPeriodCode;
+                 
+-        for (ExpenseTransferTargetAccountingLine currentTargetLine : (List<ExpenseTransferTargetAccountingLine>) targetAccountingLines) {
+-            currPayrollEndDateFiscalYear = currentTargetLine.getPayrollEndDateFiscalYear();
++        for (LaborLedgerExpenseTransferAccountingLine currentLine : accountingLines) {
++            currPayrollEndDateFiscalYear = currentLine.getPayrollEndDateFiscalYear();
+             LOG.debug("target line fiscal year: " + currPayrollEndDateFiscalYear);
+             
+-            currPayrollEndDateFiscalPeriodCode = currentTargetLine.getPayrollEndDateFiscalPeriodCode();
++            currPayrollEndDateFiscalPeriodCode = currentLine.getPayrollEndDateFiscalPeriodCode();
+             LOG.debug("target line fiscal period: " + currPayrollEndDateFiscalPeriodCode);
+             
+             // check sub fund associated with the target accounting line
+-            periodsFromParameter = checkCurrentSubFund(periodsFromParameter, currentTargetLine);
+-            LOG.debug("periodsFromParameter: " + periodsFromParameter);
++            if (currentLine instanceof ExpenseTransferTargetAccountingLine) {
++                periodsFromParameter = checkCurrentSubFund(periodsFromParameter, (ExpenseTransferTargetAccountingLine) currentLine);
++                LOG.debug("periodsFromParameter: " + periodsFromParameter);
++            }
+ 
+             if (periodsFromParameter != null) {
+                 if (currPayrollEndDateFiscalYear < currFiscalYear) {  // if in different FY, return false immediately
+@@ -186,7 +144,7 @@
+      * @param currentTargetLine
+      * @return the periodsFromParameter, which may have value in ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND
+      */
+-    protected Integer checkCurrentSubFund(Integer periodsFromParameter, ExpenseTransferTargetAccountingLine currentTargetLine) {
++    private Integer checkCurrentSubFund(Integer periodsFromParameter, ExpenseTransferTargetAccountingLine currentTargetLine) {
+         LOG.debug("in checkCurrentSubFund");
+         SubFundGroup subFundGroup = currentTargetLine.getAccount().getSubFundGroup();
+         String newComparePeriods = parameterService.getParameterValue(edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument.class, AZKFSConstants.ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND, subFundGroup.getSubFundGroupCode());
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 4662)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/validation/impl/SalaryExpenseTransferDocumentPreRules.java	(revision 4663)
+@@ -47,8 +47,6 @@
+ 
+ public class SalaryExpenseTransferDocumentPreRules extends PromptBeforeValidationBase {
+     protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(SalaryExpenseTransferDocumentPreRules.class);
+-    private UniversityDateService universityDateService;
+-    private ParameterService parameterService;
+     private SalaryExpenseTransferErrorCertificationValidation setErrorCertificationValidationService;        
+ 
+     /**
+@@ -107,13 +105,9 @@
+      * transaction is older than the number of fiscal periods in the parameter; false otherwise
+      */
+     private boolean checkTargetLines(SalaryExpenseTransferDocument setDocument) {
+-        List<ExpenseTransferTargetAccountingLine> targetAccountingLines = setDocument.getTargetAccountingLines();
+-        Integer initialPeriodsFromParameter = null;
+-        UniversityDate currUnivDate = getUniversityDateService().getCurrentUniversityDate();
+-        Integer currFiscalYear = currUnivDate.getUniversityFiscalYear();
+-        String currFiscalPeriod = currUnivDate.getUniversityFiscalAccountingPeriod();
++        Integer initialPeriodsFromParameter = null;        
+         
+-        return !(getSetErrorCertificationValidationService().defaultNumberOfFiscalPeriodsCheckForTargetLines(targetAccountingLines, initialPeriodsFromParameter, currFiscalYear, currFiscalPeriod));
++        return !(getSetErrorCertificationValidationService().defaultNumberOfFiscalPeriodsCheck(setDocument.getTargetAccountingLines(), initialPeriodsFromParameter));
+     }       
+  
+     /**
+@@ -149,42 +143,4 @@
+     public void setSetErrorCertificationValidationService(SalaryExpenseTransferErrorCertificationValidation setErrorCertificationValidationService) {
+         this.setErrorCertificationValidationService = setErrorCertificationValidationService;
+     }
+-    
+-    /**
+-     * Gets the universityDateService attribute. 
+-     * @return Returns the universityDateService.
+-     */
+-    public UniversityDateService getUniversityDateService() {
+-        if (universityDateService == null) {
+-            universityDateService = SpringContext.getBean(UniversityDateService.class);
+-        }
+-        return universityDateService;
+-    }
+-
+-    /**
+-     * Sets the universityDateService attribute value.
+-     * @param universityDateService The universityDateService to set.
+-     */
+-    public void setUniversityDateService(UniversityDateService universityDateService) {
+-        this.universityDateService = universityDateService;
+-    }
+-
+-    /**
+-     * Gets the parameterService attribute. 
+-     * @return Returns the parameterService.
+-     */
+-    public ParameterService getParameterService() {
+-        if (parameterService == null) {
+-            parameterService = SpringContext.getBean(ParameterService.class);
+-        }
+-        return parameterService;
+-    }
+-
+-    /**
+-     * Sets the parameterService attribute value.
+-     * @param parameterService The parameterService to set.
+-     */
+-    public void setParameterService(ParameterService parameterService) {
+-        this.parameterService = parameterService;
+-    }
+ }

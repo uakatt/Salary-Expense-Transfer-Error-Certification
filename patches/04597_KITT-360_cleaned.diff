@@ -1,0 +1,13 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml	(revision 4596)
++++ work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml	(revision 4597)
+@@ -3,7 +3,7 @@
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+ 	xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+ 
+-	<bean id="SalaryExpenseTransferDocument" parent="SalaryExpenseTransferDocument-parentBean">
++	<bean id="AZSalaryExpenseTransferDocument" parent="SalaryExpenseTransferDocument-parentBean">
+ 	  <property name="documentClass" value="edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument"/>
+ 	</bean>
+ 	

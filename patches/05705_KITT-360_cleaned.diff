@@ -1,0 +1,23 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/YearEndSalaryExpenseTransferDocument.java
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/YearEndSalaryExpenseTransferDocument.java	(revision 5704)
++++ work/src/edu/arizona/kfs/module/ld/document/YearEndSalaryExpenseTransferDocument.java	(revision 5705)
+@@ -18,13 +18,15 @@
+ import org.kuali.kfs.fp.document.YearEndDocument;
+ import org.kuali.kfs.sys.document.AccountingDocument;
+ 
++import edu.arizona.kfs.fp.businessobject.ErrorCertification;
++import edu.arizona.kfs.fp.document.ErrorCertifiable;
++
+ /**
+  * Labor Document Class for the Year End Salary Expense Transfer Document.
+  */
+-public class YearEndSalaryExpenseTransferDocument extends SalaryExpenseTransferDocument implements YearEndDocument {
+-
++public class YearEndSalaryExpenseTransferDocument extends SalaryExpenseTransferDocument implements YearEndDocument {   
+     /**
+-     * Class constructor that invokes <code>SalaryExpenseTransferDocument</code> constructor.
++     * Class constructor that invokes <code>YearEndSalaryExpenseTransferDocument</code> constructor.
+      */
+     public YearEndSalaryExpenseTransferDocument() {
+         super();

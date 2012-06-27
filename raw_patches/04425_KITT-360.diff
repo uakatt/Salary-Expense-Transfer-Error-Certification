@@ -1,0 +1,70 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml	(revision 0)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/ojb-ld.xml	(revision 4425)
+@@ -0,0 +1,64 @@
++<!--
++ Copyright 2005-2007 The Kuali Foundation.
++ 
++ Licensed under the Educational Community License, Version 1.0 (the "License");
++ you may not use this file except in compliance with the License.
++ You may obtain a copy of the License at
++ 
++ http://www.opensource.org/licenses/ecl1.php
++ 
++ Unless required by applicable law or agreed to in writing, software
++ distributed under the License is distributed on an "AS IS" BASIS,
++ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ See the License for the specific language governing permissions and
++ limitations under the License.
++-->
++<descriptor-repository version="1.0">
++<class-descriptor class="org.kuali.kfs.module.ld.document.SalaryExpenseTransferDocument" table="LD_EXP_TRNFR_DOC_T">
++	<field-descriptor name="documentNumber" column="FDOC_NBR" jdbc-type="VARCHAR" primarykey="true" index="true"/>
++	<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true"/>
++    <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" index="true" />
++    <field-descriptor name="nextSourceLineNumber" column="FDOC_NXT_FRM_NBR" jdbc-type="INTEGER" />
++    <field-descriptor name="nextTargetLineNumber" column="FDOC_NXT_TO_NBR" jdbc-type="INTEGER" />
++    <field-descriptor name="postingYear" column="FDOC_POST_YR" jdbc-type="INTEGER" />
++    <field-descriptor name="postingPeriodCode" column="FDOC_POST_PRD_CD" jdbc-type="VARCHAR" />
++    <field-descriptor name="emplid" column="EMPLID" jdbc-type="VARCHAR"/>
++
++	<!-- ARIZONA MODIFICATION (primary key in error certification table) -->
++ 	<field-descriptor name="errorCertID" column="ERROR_CERT_ID" jdbc-type="INTEGER" />
++
++    <reference-descriptor name="documentHeader" class-ref="org.kuali.kfs.sys.businessobject.FinancialSystemDocumentHeader" auto-retrieve="true" auto-update="object" auto-delete="object" proxy="true" >
++        <foreignkey field-ref="documentNumber" />
++    </reference-descriptor>
++
++    <reference-descriptor name="accountingPeriod" class-ref="org.kuali.kfs.coa.businessobject.AccountingPeriod" auto-retrieve="true" auto-update="none" auto-delete="none" proxy="true" >
++        <foreignkey field-ref="postingYear" />
++        <foreignkey field-ref="postingPeriodCode" />
++    </reference-descriptor>
++
++    <collection-descriptor name="sourceAccountingLines" proxy="true" element-class-ref="org.kuali.kfs.module.ld.businessobject.ExpenseTransferSourceAccountingLine" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
++        <orderby name="sequenceNumber" sort="ASC" />
++        <inverse-foreignkey field-ref="documentNumber" />
++    </collection-descriptor>
++
++    <collection-descriptor name="targetAccountingLines" proxy="true" element-class-ref="org.kuali.kfs.module.ld.businessobject.ExpenseTransferTargetAccountingLine" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
++        <orderby name="sequenceNumber" sort="ASC" />
++        <inverse-foreignkey field-ref="documentNumber" />
++    </collection-descriptor>
++
++    <collection-descriptor name="generalLedgerPendingEntries" proxy="true" element-class-ref="org.kuali.kfs.sys.businessobject.GeneralLedgerPendingEntry" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
++        <orderby name="transactionLedgerEntrySequenceNumber" sort="ASC" />
++        <inverse-foreignkey field-ref="documentNumber" />
++    </collection-descriptor>
++    
++        <collection-descriptor name="laborLedgerPendingEntries" proxy="true" element-class-ref="org.kuali.kfs.module.ld.businessobject.LaborLedgerPendingEntry" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
++        <orderby name="transactionLedgerEntrySequenceNumber" sort="ASC" />
++        <inverse-foreignkey field-ref="documentNumber" />
++    </collection-descriptor>
++
++    <!-- ARIZONA MODIFICATION (for error certification tab) -->
++    <reference-descriptor name="errorCertification" class-ref="edu.arizona.kfs.fp.businessobject.ErrorCertification" auto-retrieve="true" auto-update="object" auto-delete="object" proxy="true" >
++        <foreignkey field-ref="errorCertID" />
++    </reference-descriptor> 
++</class-descriptor>
++</descriptor-repository>
+\ No newline at end of file

@@ -1,0 +1,15 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/SalaryExpenseTransferDocument.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/SalaryExpenseTransferDocument.java	(revision 4599)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/module/ld/document/SalaryExpenseTransferDocument.java	(revision 4600)
+@@ -16,8 +16,9 @@
+ package edu.arizona.kfs.module.ld.document;
+ 
+ import edu.arizona.kfs.fp.businessobject.ErrorCertification;
++import edu.arizona.kfs.fp.document.ErrorCertifiable;
+ 
+-public class SalaryExpenseTransferDocument extends org.kuali.kfs.module.ld.document.SalaryExpenseTransferDocument {
++public class SalaryExpenseTransferDocument extends org.kuali.kfs.module.ld.document.SalaryExpenseTransferDocument implements ErrorCertifiable {
+     private ErrorCertification errorCertification;
+     private Integer errorCertID;
+     

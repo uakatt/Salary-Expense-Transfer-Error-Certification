@@ -1,0 +1,12 @@
+Index: work/src/edu/arizona/kfs/sys/AZKFSConstants.java
+===================================================================
+--- work/src/edu/arizona/kfs/sys/AZKFSConstants.java	(revision 4428)
++++ work/src/edu/arizona/kfs/sys/AZKFSConstants.java	(revision 4429)
+@@ -32,6 +32,5 @@
+     public static final String EFFORT_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND = "EFFORT_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND";
+     public static final String MESSAGE_BATCH_UPLOAD_TITLE_BANK_TRANSACTIONS = "message.batchUpload.title.bankTransactions";
+     public static final String MESSAGE_BANK_TRANSACTIONS_BATCH_UPLOAD_ERROR = "message.batchUpload.error.bankTransactions";
+-
+-
++    public static final String DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED = "DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED";
+ }

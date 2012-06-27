@@ -1,0 +1,31 @@
+Index: financial-system/kfs/trunk/work/db/scripts/arizona/data.sql
+===================================================================
+--- financial-system/kfs/trunk/work/db/scripts/arizona/data.sql	(revision 5764)
++++ financial-system/kfs/trunk/work/db/scripts/arizona/data.sql	(revision 5765)
+@@ -26,8 +26,10 @@
+ INSERT INTO KRNS_PARM_T 
+ (APPL_NMSPC_CD, NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
+ VALUES ('KFS', 'KFS-SYS', 'Document', 'INVALID_OBJECT_SUB_TYPES_BY_SUB_FUND_GROUP', SYS_GUID(), 1, 'AG=SC,HO;AHS=SC,HO;MC=SC,HO', 'Defines an invalid relationship between the Sub-Fund Group and the Object Sub-Type(s) on all Accounting documents. Format of list is sub fund group 1=object sub type 1, object sub type 2;sub fund group 2=object sub type 3,object sub type 4,object sub type 5.', 'VALID', 'D');
++INSERT INTO KRNS_PARM_T 
++((APPL_NMSPC_CD, NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
++VALUES ('KFS', 'KFS-SYS', 'Document', 'VALID_OBJECT_SUB_TYPES_BY_SUB_FUND_GROUP', SYS_GUID(), 1, '', 'Defines a valid relationship between the Sub-Fund Group and the Object Sub-Type(s) on all Accounting documents. Format of list is sub fund group 1=object sub type 1, object sub type 2;sub fund group 2=object sub type 3,object sub type 4,object sub type 5.', 'VALID', 'A');
+ 
+-
+ INSERT INTO KRNS_PARM_T 
+ (APPL_NMSPC_CD, NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
+ VALUES ('KFS','KFS-FP', 'GeneralErrorCorrection', 'DEFAULT_NUMBER_OF_DAYS_ERROR_CERTIFICATION_TAB_REQUIRED', SYS_GUID(), 1, '90', 'Defines the default number of days that will require that the Error Certification tab be completed. If the transaction is older than the default the Error Certification tab is required.', 'VALID', 'A');
+@@ -63,6 +65,14 @@
+ INSERT INTO KRNS_PARM_T 
+ (APPL_NMSPC_CD,NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
+ VALUES ('KFS', 'KFS-SYS', 'All', 'BI_REPORT_URL', SYS_GUID(), 1, 'http://bi.mosaic.arizona.edu/dev', 'The URL for UAccess Analytics', 'CONFG', 'A');
++
++INSERT INTO KRNS_PARM_T 
++(APPL_NMSPC_CD, NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
++VALUES ('KFS', 'KFS-LD', 'YearEndSalaryExpenseTransfer', 'DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED', SYS_GUID(), 1, '3', 'Defines the default number of fiscal periods that will require that the Error Certification tab be completed. If the fiscal period of the transaction exceeds the current fiscal period by more than the default, the Error Certification tab is required.', 'VALID', 'A');
++
++INSERT INTO KRNS_PARM_T 
++(APPL_NMSPC_CD, NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
++VALUES ('KFS', 'KFS-LD', 'YearEndSalaryExpenseTransfer', 'ERROR_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND', SYS_GUID(), 1, 'FEDSUB=1', 'Specific sub-fund groups that are excepted from the DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED parameter. If the account used on the TO side includes sub-funds specified in this parameter, the number of fiscal periods associated with the sub fund should be used instead of the default to determine whether or not the Error Certification tab is required. Format of list is sub fund 1=number of fiscal periods; sub fund 2=number of fiscal periods.', 'VALID', 'A');
+ 
+ --ObjectSubTypeCode KIM role type
+ INSERT INTO KRIM_TYP_T (KIM_TYP_ID,OBJ_ID,VER_NBR,NM,SRVC_NM,ACTV_IND,NMSPC_CD)

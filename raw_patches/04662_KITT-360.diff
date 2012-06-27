@@ -1,0 +1,143 @@
+Index: financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+===================================================================
+--- financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 4661)
++++ financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java	(revision 4662)
+@@ -50,21 +50,29 @@
+     private BusinessObjectService boService;
+     private MyUniversityDateService universityDateService;
+     private ErrorCertification errorCertification;
+-        
++    private SalaryExpenseTransferErrorCertificationValidation validation;
++    private UniversityDateService oldDateService;
++
+     protected static org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(SETErrorCertificationValidationTest.class);
+     
+     public void setUp() throws Exception {
+         super.setUp();
++        this.validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
++        this.oldDateService = validation.getUniversityDateService();
+         this.set = new SalaryExpenseTransferDocument();
+         this.event = new MyAttributedDocumentEvent(set);
+-        boService = SpringContext.getBean(BusinessObjectService.class);
+-        universityDateService = new MyUniversityDateService();
++        this.boService = SpringContext.getBean(BusinessObjectService.class);
++        this.universityDateService = new MyUniversityDateService();
+         this.errorCertification = new ErrorCertification();
+-        errorCertification.setErrorCertID(new Integer("1"));
++        this.errorCertification.setErrorCertID(new Integer("1"));
+     }    
++
++    public void tearDown() throws Exception {
++        super.tearDown();
++        this.validation.setUniversityDateService(oldDateService);
++    }  
+     
+     public void testSourceAccountingLine() {
+-        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
+         validation.setUniversityDateService(universityDateService);
+                
+         // create a source accounting line
+@@ -85,7 +93,6 @@
+     }
+ 
+     public void testOlderSourceAccountingLine() {
+-        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
+         validation.setUniversityDateService(universityDateService);
+                
+         // create a source accounting line
+@@ -104,9 +111,28 @@
+         boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
+         assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
+     }
++
++    public void testPriorYearSourceAccountingLine() {
++        validation.setUniversityDateService(universityDateService);
++               
++        // create a source accounting line
++        ExpenseTransferSourceAccountingLine sourceAccountingLine = new ExpenseTransferSourceAccountingLine();
++        sourceAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear() - 1);
++        sourceAccountingLine.setPayrollEndDateFiscalPeriodCode("7");
++        
++        // modify error certification's state as partially filled out
++        setUpErrorCertificationObject(false);
++        
++        set.addSourceAccountingLine(sourceAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
++    }
+     
+     public void testTargetAccountingLine() {
+-        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
+         validation.setUniversityDateService(universityDateService);
+         
+         Account account = new Account();
+@@ -134,7 +160,6 @@
+     
+     @SuppressWarnings("deprecation")
+     public void testOlderTargetAccountingLine() {
+-        SalaryExpenseTransferErrorCertificationValidation validation = SpringContext.getBean(SalaryExpenseTransferErrorCertificationValidation.class);
+         validation.setUniversityDateService(universityDateService);
+ 
+         Account account = new Account();
+@@ -159,6 +184,33 @@
+         boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
+         assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
+     }
++
++    @SuppressWarnings("deprecation")
++    public void testPriorYearTargetAccountingLine() {
++        validation.setUniversityDateService(universityDateService);
++
++        Account account = new Account();
++        SubFundGroup subFundGroup = new SubFundGroup();
++        subFundGroup.setSubFundGroupCode("FEDSUB");
++        account.setSubFundGroup(subFundGroup);
++         
++        // create a target accounting line for testing in set object
++        ExpenseTransferTargetAccountingLine targetAccountingLine = new ExpenseTransferTargetAccountingLine();
++        targetAccountingLine.setPayrollEndDateFiscalYear(validation.getUniversityDateService().getCurrentUniversityDate().getUniversityFiscalYear() - 1);
++        targetAccountingLine.setPayrollEndDateFiscalPeriodCode("7");
++        targetAccountingLine.setAccount(account);
++        
++        // modify error certification's state as partially filled out
++        setUpErrorCertificationObject(false);
++                
++        set.addTargetAccountingLine(targetAccountingLine);
++        set.setErrorCertification(errorCertification);
++        
++        validation.validate(event);
++        
++        boolean hasError = GlobalVariables.getErrorMap().doesPropertyHaveError(KFSKeyConstants.ERROR_ERROR_CERT_KEY);
++        assertTrue("Error Certification Tab isn't required, but should be.", hasError);        
++    }
+     
+     public void setUpErrorCertificationObject(boolean isCompleted) {
+         if (isCompleted) {
+@@ -175,8 +227,7 @@
+         }
+     }
+     
+-    static class MyUniversityDateService extends UniversityDateServiceImpl {
+-    
++    static class MyUniversityDateService extends UniversityDateServiceImpl {    
+         public UniversityDate getCurrentUniversityDate() {
+             UniversityDate universityDate = SpringContext.getBean(UniversityDateService.class).getCurrentUniversityDate();
+             universityDate.setUniversityFiscalAccountingPeriod("13");
+@@ -187,7 +238,6 @@
+     static class MyAttributedDocumentEvent extends AttributedDocumentEventBase {
+         public MyAttributedDocumentEvent(SalaryExpenseTransferDocument d) {
+             super("", "", d);          
+-        }
+-    
++        }    
+     }
+ }
+
+Property changes on: financial-system/kfs/trunk/test/unit/src/edu/arizona/kfs/module/ld/document/validation/SETErrorCertificationValidationTest.java
+___________________________________________________________________
+Added: svn:mergeinfo
+

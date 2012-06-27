@@ -1,0 +1,13 @@
+Index: work/web-root/WEB-INF/struts-config.xml
+===================================================================
+--- work/web-root/WEB-INF/struts-config.xml	(revision 4423)
++++ work/web-root/WEB-INF/struts-config.xml	(revision 4424)
+@@ -111,7 +111,7 @@
+ 
+ 		<!-- Labor Distribution Bean Definitions -->
+ 		<form-bean name="LaborSalaryExpenseTransferForm"
+-			type="org.kuali.kfs.module.ld.document.web.struts.SalaryExpenseTransferForm" />
++			type="edu.arizona.kfs.module.ld.document.web.struts.SalaryExpenseTransferForm" />
+ 		<form-bean name="LaborYearEndSalaryExpenseTransferForm"
+ 			type="org.kuali.kfs.module.ld.document.web.struts.YearEndSalaryExpenseTransferForm" />
+ 		<form-bean name="LaborBenefitExpenseTransferForm"

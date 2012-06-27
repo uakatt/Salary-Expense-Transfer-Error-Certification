@@ -1,0 +1,14 @@
+Index: work/src/edu/arizona/kfs/module/ld/spring-ld.xml
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/spring-ld.xml	(revision 4594)
++++ work/src/edu/arizona/kfs/module/ld/spring-ld.xml	(revision 4595)
+@@ -112,6 +112,9 @@
+ 		</property>
+ 	</bean>
+ 
++	<!-- validations -->
++	<import resource="document/validation/configuration/SalaryExpenseTransferValidations.xml" />
++	
+ </beans>
+ 
+ 

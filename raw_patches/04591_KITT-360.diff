@@ -1,0 +1,17 @@
+Index: financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/KFSKeyConstants.java
+===================================================================
+--- financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/KFSKeyConstants.java	(revision 4590)
++++ financial-system/kfs/trunk/work/src/edu/arizona/kfs/sys/KFSKeyConstants.java	(revision 4591)
+@@ -25,7 +25,11 @@
+     
+     // GEC Errors and Message
+     public static final String ERROR_GEC_REF_NUMBER_INVALID = "error.gec.ref.number";
++    public static final String QUESTION_ERROR_CERTIFICATION_STMT = "question.gec.errorCertStmt";
++ 
++    // Error Certification
+     public static final String ERROR_ERROR_CERT_DATE_PARAM_TRIGGERED = "error.errorCert.dateParamTriggered";
+     public static final String ERROR_ERROR_CERT_FIELDS_REQ = "error.errorCert.fieldsReq";
+-    public static final String QUESTION_ERROR_CERTIFICATION_STMT = "question.gec.errorCertStmt";
++    public static final String ERROR_ERROR_CERT_FISCAL_PER_PARAM_TRIGGERED = "error.errorCert.fiscalPerParamTriggered";
++    public static final String ERROR_ERROR_CERT_KEY = "document.errorCertification";
+ }

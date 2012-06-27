@@ -1,0 +1,17 @@
+Index: work/db/scripts/arizona/data.sql
+===================================================================
+--- work/db/scripts/arizona/data.sql	(revision 4429)
++++ work/db/scripts/arizona/data.sql	(revision 4430)
+@@ -35,7 +35,12 @@
+ INSERT INTO KRNS_PARM_T (NMSPC_CD,PARM_DTL_TYP_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,TXT,PARM_DESC_TXT,CONS_CD) 
+ VALUES ('KFS-GL','PosterUseTaxEntriesStep','USE_TAX_TAX_REGION_CODE','2AC425A6-6025-185F-5F00-9DABCE347610',2,'CONFG','5','The Tax Region used for calculating Arizona Use Tax.','A');
+ 
++INSERT INTO KRNS_PARM_T (NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
++VALUES ('KFS-LD', 'SalaryExpenseTransfer', 'DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED', SYS_GUID(), 1, '3', 'Defines the default number of fiscal periods that will require that the Error Certification tab be completed. If the fiscal period of the transaction exceeds the current fiscal period by more than the default, the Error Certification tab is required. ', 'VALID', 'A');
+ 
++INSERT INTO KRNS_PARM_T (NMSPC_CD, PARM_DTL_TYP_CD, PARM_NM, OBJ_ID, VER_NBR, TXT, PARM_DESC_TXT, PARM_TYP_CD, CONS_CD)
++VALUES ('KFS-LD', 'SalaryExpenseTransfer', 'EFFORT_CERTIFICATION_DEFAULT_OVERRIDE_BY_SUB_FUND', SYS_GUID(), 1, 'FEDSUB=1', 'Specific sub-fund groups that are excepted from the DEFAULT_NUMBER_OF_FISCAL_PERIODS_ERROR_CERTIFICATION_TAB_REQUIRED parameter. If the account used on the TO side includes sub-funds specified in this parameter, the number of fiscal periods associated with the sub fund should be used instead of the default to determine whether or not the Error Certification tab is required. Format of list is sub fund 1=number of fiscal periods; sub fund 2=number of fiscal periods.', 'VALID', 'A');
++
+ --ObjectSubTypeCode KIM role type
+ INSERT INTO KRIM_TYP_T (KIM_TYP_ID,OBJ_ID,VER_NBR,NM,SRVC_NM,ACTV_IND,NMSPC_CD)
+ VALUES ('71',SYS_GUID(),1,'Object Sub-Type & Document Type','objectSubTypeCodeRoleTypeService','Y','KFS-COA');

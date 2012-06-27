@@ -1,0 +1,12 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml	(revision 4612)
++++ work/src/edu/arizona/kfs/module/ld/document/datadictionary/SalaryExpenseTransferDocument.xml	(revision 4613)
+@@ -5,6 +5,7 @@
+ 
+ 	<bean id="AZSalaryExpenseTransferDocument" parent="SalaryExpenseTransferDocument-parentBean">
+ 	  <property name="documentClass" value="edu.arizona.kfs.module.ld.document.SalaryExpenseTransferDocument"/>
++	  <property name="promptBeforeValidationClass" value="edu.arizona.kfs.module.ld.document.validation.impl.SalaryExpenseTransferDocumentPreRules"/>
+ 	</bean>
+ 	
+ </beans>

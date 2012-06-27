@@ -1,0 +1,18 @@
+Index: work/src/edu/arizona/kfs/module/ld/document/datadictionary/YearEndSalaryExpenseTransferDocument.xml
+===================================================================
+--- work/src/edu/arizona/kfs/module/ld/document/datadictionary/YearEndSalaryExpenseTransferDocument.xml	(revision 5702)
++++ work/src/edu/arizona/kfs/module/ld/document/datadictionary/YearEndSalaryExpenseTransferDocument.xml	(revision 5703)
+@@ -5,9 +5,8 @@
+ 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+ 
+-	<bean id="YearEndSalaryExpenseTransferDocument" parent="YearEndSalaryExpenseTransferDocument-parentBean">
++	<bean id="YearEndSalaryExpenseTransferDocument" parent="YearEndSalaryExpenseTransferDocument-parentBean"> 
+ 	  <property name="documentClass" value="edu.arizona.kfs.module.ld.document.YearEndSalaryExpenseTransferDocument"/>
+ 	  <property name="promptBeforeValidationClass" value="edu.arizona.kfs.module.ld.document.validation.impl.SalaryExpenseTransferDocumentPreRules"/>
+-	</bean>	
+-</beans>
+-  
++	</bean>
++</beans>
+\ No newline at end of file
